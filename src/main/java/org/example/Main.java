@@ -1,7 +1,11 @@
 package org.example;
+import src.main.java.org.example.Card;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        Card Test = new Card();
+        Test.setRank(13);
+        Test.setSuit("Hearts");
+        System.out.println(Test.viewCard());
     }
 }

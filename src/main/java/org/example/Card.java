@@ -13,6 +13,7 @@ public class Card {
         this.suit = suit;
     }
 
-    public viewCard()
-
+    public String viewCard() {
+        return "Suit: " + this.suit + "\nRank: " + this.rank;
+    }
 }
