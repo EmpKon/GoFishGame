@@ -3,9 +3,7 @@ import src.main.java.org.example.Card;
 
 public class Main {
     public static void main(String[] args) {
-        Card Test = new Card();
-        Test.setRank(13);
-        Test.setSuit("Hearts");
+        Card Test = new Card(13, "Hearts");
         System.out.println(Test.viewCard());
     }
 }
