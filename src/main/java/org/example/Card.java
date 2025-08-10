@@ -1,19 +1,17 @@
-package src.main.java.org.example;
+package org.example;
 
 
 public class Card {
     int rank;
     String suit;
 
-    public void setRank(int rank) {
+    public Card(int rank, String suit) {
         this.rank = rank;
-    }
-
-    public void setSuit(String suit) {
         this.suit = suit;
     }
 
-    public String viewCard() {
+    @Override
+    public String toString() {
         return "Suit: " + this.suit + "\nRank: " + this.rank;
     }
 }
