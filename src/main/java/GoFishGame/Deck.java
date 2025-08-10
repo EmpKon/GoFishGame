@@ -1,18 +1,27 @@
-package org.example;
-import src.main.java.org.example.Card;
+package GoFishGame;
+import GoFishGame.Card;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 public class Deck {
-    ArrayList<Card> Deck = new ArrayList<>();
-    int[] ranks = new int[13];
-    String[] suits = new String[4];
+    ArrayList<Card> deck = new ArrayList<>();
+    String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
 
-    public void deckFill() {
-        this.ranks = ranks;
-        for (int i = 0; i < this.ranks.length; i++) {
-            this.ranks[i] = i;
+    public void fill() {
+        for (String suit : suits) {
+            for (int rank = 0; rank < 13; rank++) {
+                Card card = new Card(rank + 1, suit);
+                deck.add(card);
+            }
         }
+    };
+
+    public void shuffle() {
+        Collections.shuffle(deck);
+    }
+
+    public String toString() {
+        return "Deck: " + deck;
     }
 }
