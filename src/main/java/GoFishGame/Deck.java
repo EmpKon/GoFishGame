@@ -21,6 +21,10 @@ public class Deck {
         Collections.shuffle(deck);
     }
 
+    public Card drawCard() {
+        return deck.remove(0);
+    }
+
     public String toString() {
         return "Deck: " + deck;
     }
