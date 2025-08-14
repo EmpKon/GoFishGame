@@ -9,6 +9,7 @@ public class Deck {
     String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
 
     public void fill() {
+        deck.clear();
         for (String suit : suits) {
             for (int rank = 0; rank < 13; rank++) {
                 Card card = new Card(rank + 1, suit);
