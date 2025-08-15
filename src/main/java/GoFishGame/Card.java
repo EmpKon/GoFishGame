@@ -1,4 +1,4 @@
-package org.example;
+package GoFishGame;
 
 
 public class Card {
@@ -9,6 +9,10 @@ public class Card {
         this.rank = rank;
         this.suit = suit;
     }
+
+    public int getRank() {
+        return rank;
+    };
 
     @Override
     public String toString() {
