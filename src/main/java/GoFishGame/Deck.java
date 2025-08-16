@@ -8,8 +8,7 @@ public class Deck {
     ArrayList<Card> deck = new ArrayList<>();
     String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
 
-    public void fill() {
-        deck.clear();
+    public Deck() {
         for (String suit : suits) {
             for (int rank = 0; rank < 13; rank++) {
                 Card card = new Card(rank + 1, suit);
