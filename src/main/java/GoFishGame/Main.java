@@ -1,5 +1,4 @@
 package GoFishGame;
-import GoFishGame.Card;
 
 import java.util.Scanner;
 
@@ -30,7 +29,7 @@ public class Main {
                     break;
 
                 case 4:
-                    System.out.println(hand.setCheck());
+                    System.out.println(hand.checkSet());
                     break;
 
                 case 8:
