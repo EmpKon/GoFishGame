@@ -1,16 +1,27 @@
 package GoFishGame;
 
 public class Player {
+    private static int serial = 1;
+    private final int id;
     int score;
     Hand hand;
 
     public Player(int score, Hand hand) {
         this.score = score;
         this.hand = hand;
+        this.id = serial++;
+    }
+
+    public Player() {
+        this(0, new Hand());
+    }
+
+    public String pId() {
+        return "Player_" + this.id;
     }
 
     public String pShowHand() {
-        return this.hand.toString();
+        return pId() + " " + this.hand.toString();
     }
 
     public int pScore() {
