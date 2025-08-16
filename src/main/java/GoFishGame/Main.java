@@ -8,9 +8,9 @@ public class Main {
         Scanner inp = new Scanner(System.in);
         Deck deck = new Deck();
         Hand hand = new Hand();
-        deck.fill();
-        deck.shuffle();
+        Game game = new Game();
 
+        game.setup(deck);
 
         while (!end) {
             System.out.println("1. Draw a card\n2. Show hand\n3. Print deck\n4. Check for a set\n8. Reshuffle\n9. Refill deck\n0. End");
@@ -34,11 +34,6 @@ public class Main {
 
                 case 8:
                     deck.shuffle();
-                    System.out.println(deck.toString());
-                    break;
-
-                case 9:
-                    deck.fill();
                     System.out.println(deck.toString());
                     break;
 
