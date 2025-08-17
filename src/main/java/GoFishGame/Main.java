@@ -11,8 +11,8 @@ public class Main {
         Game game = new Game();
 
         game.setup(deck);
-
-        while (!end) {
+        game.play();
+        /*while (!end) {
             System.out.println("1. Draw a card\n2. Show hand\n3. Print deck\n4. Check for a set\n8. Reshuffle\n9. Refill deck\n0. End");
             switch(inp.nextInt()) {
                 case 1:
@@ -45,7 +45,7 @@ public class Main {
                     System.out.println("Invalid input");
             }
 
-        };
+        };*/
 
     }
 }
