@@ -16,27 +16,31 @@ public class Player {
         this(0, new Hand());
     }
 
-    public String pId() {
+    public String id() {
         return "Player_" + this.id;
     }
 
-    public String pShowHand() {
-        return pId() + " " + this.hand.toString();
+    public String showHand() {
+        return id() + " " + this.hand.toString();
     }
 
-    public int pScore() {
+    public int score() {
         return this.score;
     }
 
-    public void pDrawCard(Deck deck) {
+    public void drawCard(Deck deck) {
         this.hand.addCard(deck);
     }
 
-    public Boolean pCheckSet() {
-        Boolean set = this.hand.checkSet();
-        if (set) {
+    public int checkSet() {
+        return this.hand.checkSet();
+    }
+
+    public void clearSet() {
+        int set = this.hand.checkSet();
+        if (set != 0) {
+            this.hand.clearSet(set);
             this.score += 1;
         }
-        return set;
     }
 }
