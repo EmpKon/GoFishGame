@@ -15,7 +15,7 @@ public class Hand {
         hand.removeIf(card -> card.rank == rank);
     };
 
-    public Boolean checkSet() {
+    public int checkSet() {
         Hashtable<Integer, Integer> ranks = new Hashtable<Integer, Integer>();
         for (Card card : hand) {
             int rank = card.getRank();
@@ -31,10 +31,9 @@ public class Hand {
             int key = keys.get(r);
             int value = ranks.get(key);
             if (value == 4) {
-                clearSet(key);
-                return true;
+                return key;
         }}
-        return false;
+        return 0;
     }
 
     @Override
