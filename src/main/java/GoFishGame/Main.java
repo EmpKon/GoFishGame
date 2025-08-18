@@ -3,7 +3,7 @@ package GoFishGame;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         boolean end = false;
         Scanner inp = new Scanner(System.in);
         Deck deck = new Deck();

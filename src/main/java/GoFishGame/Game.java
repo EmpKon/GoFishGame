@@ -48,7 +48,7 @@ public class Game {
         }
     }
 
-    public void turn(Player player) {
+    public void turn(Player player) throws InterruptedException {
         String name = player.id();
         ArrayList<Player> opps = new ArrayList<Player>();
         int counter = 0;
@@ -56,26 +56,45 @@ public class Game {
 
         int set = player.checkSet();
         if (set > 0) {
-            System.out.println(name + " has completed a set of 4 rank " + set + " cards!" );
+            System.out.println(name + " has completed a set of 4 rank " + set + " cards!");
             player.clearSet();
             System.out.println(name + " now has a total score of " + player.score() + "!");
 
         }
         System.out.println("What would you like to do?");
-        System.out.println("Who do you want to take a card from?");
         for (Player p : players) {
             if (p != player) {
-                counter++;
                 opps.add(p);
-                System.out.println(counter + ". " + p.id());
             }
         }
+        boolean turnOver = false;
+        do {
+            player.showHand();
+            System.out.println("Who do you want to take a card from?");
+            counter = 0;
+            for (Player p : opps) {
+                counter++;
+                System.out.println(counter + ". " + p.id());
+            }
+            if (inp.hasNextInt()) {
+                int target = inp.nextInt();
+                if (target > 0 || target < opps.size() + 1) {
+                    System.out.println("What rank would you like to steal?");
+                    //player.stealCard(opps.get(target-1), rank); TODO
+                }
+            }
+            else {
+                System.out.println("\nPlease input a number!\n");
+                inp.next();
+                wait(1000);
+            }
 
 
+        } while (!turnOver);
 
     }
 
-    public void play() {
+    public void play() throws InterruptedException {
         int curr = 0;
         do {
             if (curr < pCount) {
