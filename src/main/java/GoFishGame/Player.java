@@ -1,5 +1,7 @@
 package GoFishGame;
 
+import java.util.Collections;
+
 public class Player {
     private static int serial = 1;
     private final int id;
@@ -21,6 +23,7 @@ public class Player {
     }
 
     public String showHand() {
+        this.hand.sort();
         return id() + " " + this.hand.toString();
     }
 
@@ -30,6 +33,10 @@ public class Player {
 
     public void drawCard(Deck deck) {
         this.hand.addCard(deck);
+    }
+
+    public String stealCard(Player target, int rank) {
+        return this.hand.stealCards(target.hand, rank).toString();
     }
 
     public int checkSet() {
