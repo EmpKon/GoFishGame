@@ -10,7 +10,7 @@ public class Card {
         this.suit = suit;
     }
 
-    public int getRank() {
+    public Integer getRank() {
         return rank;
     };
 
