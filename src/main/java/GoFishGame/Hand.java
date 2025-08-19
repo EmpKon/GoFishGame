@@ -1,9 +1,6 @@
 package GoFishGame;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 public class Hand {
     ArrayList<Card> hand = new ArrayList<>();
@@ -12,7 +9,14 @@ public class Hand {
         hand.add(deck.drawCard());
     }
 
-    //public
+    public SortedSet<Integer> ranksInHand() {
+        SortedSet<Integer> hRanks = new TreeSet<Integer>();
+        for (Card card : this.hand) {
+            int hRank = card.rank;
+            hRanks.add(hRank);
+        }
+         return hRanks;
+    }
 
     public ArrayList<Card> stealCards(Hand targetHand, int rank) {
         ArrayList<Card> stolenCards = new ArrayList<Card>();
