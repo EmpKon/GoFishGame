@@ -3,6 +3,7 @@ package GoFishGame;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.SortedSet;
 
 public class Game {
     ArrayList<Player> players = new ArrayList<Player>();
@@ -79,8 +80,24 @@ public class Game {
             if (inp.hasNextInt()) {
                 int target = inp.nextInt();
                 if (target > 0 || target < opps.size() + 1) {
+                    Player opp = opps.get(target-1);
                     System.out.println("What rank would you like to steal?");
-                    //player.stealCard(opps.get(target-1), rank); TODO
+                    SortedSet<Integer> ranks = player.hand.ranksInHand();
+                    boolean stealOver = false;
+                    do {
+                        for (int rank : ranks) {
+                            System.out.println(rank);
+                        }
+                        if (inp.hasNextInt()) {
+                            int pick = inp.nextInt();
+                            if (ranks.contains(pick)) {
+                                player.stealCard(opp, pick);
+                            }
+                        }
+                        else {
+                            stealOver = true;
+                        }
+                    } while (!stealOver);
                 }
             }
             else {
