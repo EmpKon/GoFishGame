@@ -90,13 +90,12 @@ public class Game {
                         }
                         if (inp.hasNextInt()) {
                             int pick = inp.nextInt();
-                            if (ranks.contains(pick)) {
-                                player.stealCard(opp, pick);
+                            if (ranks.contains(pick)) { //Currently breaks if empty hand
+                                System.out.println(player.stealCard(opp, pick)); //Concurrentmodificationexception uhoh
+                                stealOver = true;
                             }
                         }
-                        else {
-                            stealOver = true;
-                        }
+
                     } while (!stealOver);
                 }
             }
