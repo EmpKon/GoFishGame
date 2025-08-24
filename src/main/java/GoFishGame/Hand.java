@@ -23,12 +23,12 @@ public class Hand {
         for (Card card : targetHand.hand) {
             if (card.rank == rank) {
                 stolenCards.add(card);
-                targetHand.hand.remove(card);
             }
         }
         if (!stolenCards.isEmpty()) {
             this.hand.addAll(stolenCards);
         }
+        targetHand.hand.removeAll(stolenCards);
         return stolenCards;
     }
 
