@@ -1,5 +1,6 @@
 package GoFishGame;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 public class Player {
@@ -35,8 +36,8 @@ public class Player {
         this.hand.addCard(deck);
     }
 
-    public String stealCard(Player target, int rank) {
-        return this.hand.stealCards(target.hand, rank).toString();
+    public ArrayList<Card> stealCard(Player target, int rank) {
+        return this.hand.stealCards(target.hand, rank);
     }
 
     public int checkSet() {
