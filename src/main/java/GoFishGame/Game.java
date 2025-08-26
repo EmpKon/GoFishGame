@@ -5,11 +5,13 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.SortedSet;
 
+import static java.lang.Thread.sleep;
+
 public class Game {
     ArrayList<Player> players = new ArrayList<Player>();
     Scanner inp = new Scanner(System.in);
     int pCount;
-    int cardCount; //Initial hand dealt
+    int cardCount;
     private Deck deck;
     Boolean end = false;
 
@@ -48,6 +50,63 @@ public class Game {
             System.out.println(p.showHand());
         }
     }
+    public void checkForSet(Player player) {
+        String name = player.id();
+        int set = player.checkSet();
+        if (set > 0) {
+            System.out.println(name + " has completed a set of 4 rank " + set + " cards!");
+            player.clearSet();
+            System.out.println(name + " now has a total score of " + player.score() + "!");
+        }
+
+    }
+
+    public Boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) { //TODO Fat messy method, split this up
+        String name = player.id();
+        player.showHand();
+        System.out.println("Who do you want to take a card from?");
+        int counter = 0;
+        for (Player p : opps) {
+            counter++;
+            System.out.println(counter + ". " + p.id());
+        }
+
+        if (inp.hasNextInt()) { //TODO inp validation method
+            int target = inp.nextInt();
+            if (target > 0 && target < opps.size() + 1) {
+                Player opp = opps.get(target-1);
+                System.out.println(name + "'s turn");
+                System.out.println("What rank would you like to steal?");
+                SortedSet<Integer> ranks = player.hand.ranksInHand();
+        for (int rank : ranks) {
+            System.out.println(rank);
+        }
+        if (inp.hasNextInt()) {
+            int pick = inp.nextInt();
+            if (ranks.contains(pick)) {
+                ArrayList<Card> stolenCards = player.stealCard(opp, pick);
+                if (stolenCards.isEmpty()) {
+                    System.out.println("Go Fish!");
+                    player.drawCard(deck);
+                    return false;
+                }
+                else {
+                    System.out.println("You stole: " + stolenCards);
+                    System.out.println("You can try to steal again!"); //Currently cant switch targets after successful steal
+                    return true;
+                }
+            }
+        }
+            }
+        }
+            else {
+        System.out.println("\nPlease input a number!\n");
+        inp.next();
+
+        }
+    return false;
+    }
+
 
     public void turn(Player player) throws InterruptedException {
         String name = player.id();
@@ -55,59 +114,16 @@ public class Game {
         int counter = 0;
         System.out.println(name + "'s turn!");
 
-        int set = player.checkSet();
-        if (set > 0) {
-            System.out.println(name + " has completed a set of 4 rank " + set + " cards!");
-            player.clearSet();
-            System.out.println(name + " now has a total score of " + player.score() + "!");
+        checkForSet(player); //Make this an option for an action during a player's turn
 
-        }
         System.out.println("What would you like to do?");
+        //TODO Options here
         for (Player p : players) {
             if (p != player) {
                 opps.add(p);
             }
         }
-        boolean turnOver = false;
-        do {
-            player.showHand();
-            System.out.println("Who do you want to take a card from?");
-            counter = 0;
-            for (Player p : opps) {
-                counter++;
-                System.out.println(counter + ". " + p.id());
-            }
-            if (inp.hasNextInt()) {
-                int target = inp.nextInt();
-                if (target > 0 || target < opps.size() + 1) {
-                    Player opp = opps.get(target-1);
-                    System.out.println("What rank would you like to steal?");
-                    SortedSet<Integer> ranks = player.hand.ranksInHand();
-                    boolean stealOver = false;
-                    do {
-                        for (int rank : ranks) {
-                            System.out.println(rank);
-                        }
-                        if (inp.hasNextInt()) {
-                            int pick = inp.nextInt();
-                            if (ranks.contains(pick)) { //Currently breaks if empty hand
-                                System.out.println(player.stealCard(opp, pick)); //Concurrentmodificationexception uhoh
-                                stealOver = true;
-                            }
-                        }
-
-                    } while (!stealOver);
-                }
-            }
-            else {
-                System.out.println("\nPlease input a number!\n");
-                inp.next();
-                wait(1000);
-            }
-
-
-        } while (!turnOver);
-
+        turnSteal(player, opps, inp, deck);
     }
 
     public void play() throws InterruptedException {
