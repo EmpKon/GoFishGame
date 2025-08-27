@@ -18,28 +18,27 @@ public class Game {
     public void setup(Deck deck) {
         this.deck = deck;
 
-        do {
-            System.out.println("Enter the number of players! (2-5)");
-            while (!inp.hasNext("[2-5]")) {
-                System.out.println("Please enter a valid number!");
-                inp.next();
-            }
-            pCount = inp.nextInt();
-            if (pCount > 3) {
-                cardCount = 7;
-            }
-            else {
-                cardCount = 5;
-            }
-        } while (pCount < 1);
+        System.out.println("Enter the number of players! (2-5)");
+        while (!inp.hasNext("[2-5]")) {
+            System.out.println("Please enter a valid number!");
+            inp.next();
+        }
+        pCount = inp.nextInt();
+
+        if (pCount > 3) {
+            cardCount = 7;
+        }
+        else {
+            cardCount = 5;
+        }
+
         System.out.println("Starting game with " + pCount + " players and a " + cardCount + " card hand!");
         for (int p = 0; p < pCount; p++) {
             players.add(new Player());
         }
-
         this.deck.shuffle();
-
         System.out.println("Dealing cards...");
+
         for (Player p : players) {
             for (int dealt = 0; dealt < cardCount; dealt++) {
                 p.drawCard(this.deck);
@@ -53,6 +52,7 @@ public class Game {
     public void checkForSet(Player player) {
         String name = player.id();
         int set = player.checkSet();
+
         if (set > 0) {
             System.out.println(name + " has completed a set of 4 rank " + set + " cards!");
             player.clearSet();
@@ -61,10 +61,25 @@ public class Game {
 
     }
 
+    public Player selectOpponent(ArrayList<Player> opps) {
+        System.out.println("Who do you want to take a card from?");
+        int counter = 0;
+
+        for (Player p : opps) {
+            counter++;
+            System.out.println(counter + ". " + p.id());
+        }
+
+        int target = intInpValidation(1, opps.size(), inp);
+        return opps.get(target - 1);
+    }
+
     public int intInpValidation(int min, int max, Scanner inp) {
+
         if (min > max) {
             throw new IllegalArgumentException("min cannot be greater than max");
         }
+
         while (true) {
             if (inp.hasNextInt()) {
                 int val = inp.nextInt();
@@ -80,46 +95,43 @@ public class Game {
     public boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) { //TODO Fat messy method, split this up
         String name = player.id();
         player.showHand();
-        System.out.println("Who do you want to take a card from?");
-        int counter = 0;
-        for (Player p : opps) {
-            counter++;
-            System.out.println(counter + ". " + p.id());
-        }
-
-        int target = intInpValidation(1, opps.size(), inp);
-        Player opp = opps.get(target - 1);
+        Player opp = selectOpponent(opps);
 
         while(true) {
-        System.out.println(name + "'s turn");
-        System.out.println("What rank would you like to steal?");
-        SortedSet<Integer> ranks = player.hand.ranksInHand();
-        for (int rank : ranks) {
-            System.out.println(rank);
-        }
+            System.out.println(name + "'s turn");
+            System.out.println("What rank would you like to steal?");
+            SortedSet<Integer> ranks = player.hand.ranksInHand();
 
-        if (inp.hasNextInt()) {
-            int pick = inp.nextInt();
-            if (ranks.contains(pick)) {
-                ArrayList<Card> stolenCards = player.stealCard(opp, pick);
-                if (stolenCards.isEmpty()) {
-                    System.out.println("Go Fish!");
-                    System.out.println("You drew " + player.drawCard(deck) + "!");
-                    return false;
-                } else {
-                    System.out.println("You stole: " + stolenCards);
-                    System.out.println("You can try to steal again!"); //Currently cant switch targets after successful steal
-                    return true;
+            for (int rank : ranks) {
+                System.out.println(rank);
+            }
+
+            if (inp.hasNextInt()) {
+                int pick = inp.nextInt();
+
+                if (ranks.contains(pick)) {
+                    ArrayList<Card> stolenCards = player.stealCard(opp, pick);
+
+                    if (stolenCards.isEmpty()) {
+                        System.out.println("Go Fish!");
+                        System.out.println("You drew " + player.drawCard(deck) + "!");
+                        return false;
+                    }
+                    else {
+                        System.out.println("You stole: " + stolenCards);
+                        System.out.println("You can try to steal again!"); //Currently cant switch targets after successful steal
+                        return true;
+                    }
                 }
-            }
-            else {
-                System.out.println("You can't try to steal a rank that you don't have");
-            }
 
-        } else {
-            System.out.println("Please input a number");
-            inp.next();
-        }
+                else {
+                    System.out.println("You can't try to steal a rank that you don't have");
+                }
+
+            } else {
+                System.out.println("Please input a number");
+                inp.next();
+            }
         }
     }
 
@@ -133,7 +145,7 @@ public class Game {
         checkForSet(player); //Make this an option for an action during a player's turn
 
         System.out.println("What would you like to do?");
-        //TODO Switch case for options here
+        //TODO method for options here
         //TODO cases, check hand, steal, complete set(?), view scores, view completed ranks, view cards left
 
         for (Player p : players) {
@@ -150,17 +162,10 @@ public class Game {
 
     public void play() throws InterruptedException {
         int curr = 0;
-        do {
-            if (curr < pCount) {
-                System.out.println(curr);
-                }
-            else {
-                curr = 0;
-            }
-
+        while (!end) {
             turn(this.players.get(curr));
-            curr++;
-        } while (!end);
+            curr = (curr + 1) % pCount;
+        }
 
     }
 
