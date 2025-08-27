@@ -5,8 +5,10 @@ import java.util.*;
 public class Hand {
     ArrayList<Card> hand = new ArrayList<>();
 
-    public void addCard(Deck deck) {
-        hand.add(deck.drawCard());
+    public Card addCard(Deck deck) {
+        Card card = deck.drawCard();
+        hand.add(card);
+        return card;
     }
 
     public SortedSet<Integer> ranksInHand() {
