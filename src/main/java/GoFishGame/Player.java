@@ -32,8 +32,8 @@ public class Player {
         return this.score;
     }
 
-    public void drawCard(Deck deck) {
-        this.hand.addCard(deck);
+    public Card drawCard(Deck deck) {
+        return this.hand.addCard(deck);
     }
 
     public ArrayList<Card> stealCard(Player target, int rank) {
