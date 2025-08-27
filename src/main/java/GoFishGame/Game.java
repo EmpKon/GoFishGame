@@ -61,7 +61,23 @@ public class Game {
 
     }
 
-    public Boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) { //TODO Fat messy method, split this up
+    public int intInpValidation(int min, int max, Scanner inp) {
+        if (min > max) {
+            throw new IllegalArgumentException("min cannot be greater than max");
+        }
+        while (true) {
+            if (inp.hasNextInt()) {
+                int val = inp.nextInt();
+                if (val >= min && val <= max) {
+                    return val;
+                } else {
+                    System.out.println("Please enter a number between " + min + " and " + max);
+                }
+            }
+        }
+    }
+
+    public boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) { //TODO Fat messy method, split this up
         String name = player.id();
         player.showHand();
         System.out.println("Who do you want to take a card from?");
@@ -71,40 +87,40 @@ public class Game {
             System.out.println(counter + ". " + p.id());
         }
 
-        if (inp.hasNextInt()) { //TODO inp validation method
-            int target = inp.nextInt();
-            if (target > 0 && target < opps.size() + 1) {
-                Player opp = opps.get(target-1);
-                System.out.println(name + "'s turn");
-                System.out.println("What rank would you like to steal?");
-                SortedSet<Integer> ranks = player.hand.ranksInHand();
+        int target = intInpValidation(1, opps.size(), inp);
+        Player opp = opps.get(target - 1);
+
+        while(true) {
+        System.out.println(name + "'s turn");
+        System.out.println("What rank would you like to steal?");
+        SortedSet<Integer> ranks = player.hand.ranksInHand();
         for (int rank : ranks) {
             System.out.println(rank);
         }
+
         if (inp.hasNextInt()) {
             int pick = inp.nextInt();
             if (ranks.contains(pick)) {
                 ArrayList<Card> stolenCards = player.stealCard(opp, pick);
                 if (stolenCards.isEmpty()) {
                     System.out.println("Go Fish!");
-                    player.drawCard(deck);
+                    System.out.println("You drew " + player.drawCard(deck) + "!");
                     return false;
-                }
-                else {
+                } else {
                     System.out.println("You stole: " + stolenCards);
                     System.out.println("You can try to steal again!"); //Currently cant switch targets after successful steal
                     return true;
                 }
             }
-        }
-            }
-        }
             else {
-        System.out.println("\nPlease input a number!\n");
-        inp.next();
+                System.out.println("You can't try to steal a rank that you don't have");
+            }
 
+        } else {
+            System.out.println("Please input a number");
+            inp.next();
         }
-    return false;
+        }
     }
 
 
@@ -117,13 +133,19 @@ public class Game {
         checkForSet(player); //Make this an option for an action during a player's turn
 
         System.out.println("What would you like to do?");
-        //TODO Options here
+        //TODO Switch case for options here
+        //TODO cases, check hand, steal, complete set(?), view scores, view completed ranks, view cards left
+
         for (Player p : players) {
             if (p != player) {
                 opps.add(p);
             }
         }
-        turnSteal(player, opps, inp, deck);
+
+        boolean stole = false;
+        do {
+            stole = turnSteal(player, opps, inp, deck);
+        } while (stole);
     }
 
     public void play() throws InterruptedException {
