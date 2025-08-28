@@ -49,7 +49,7 @@ public class Game {
             System.out.println(p.showHand());
         }
     }
-    public void checkForSet(Player player) {
+    public boolean checkForSet(Player player) {
         String name = player.id();
         int set = player.checkSet();
 
@@ -57,8 +57,9 @@ public class Game {
             System.out.println(name + " has completed a set of 4 rank " + set + " cards!");
             player.clearSet();
             System.out.println(name + " now has a total score of " + player.score() + "!");
+            return true;
         }
-
+        return false;
     }
 
     public Player selectOpponent(ArrayList<Player> opps) {
@@ -100,7 +101,7 @@ public class Game {
         while(true) {
             System.out.println(name + "'s turn");
             System.out.println("What rank would you like to steal?");
-            SortedSet<Integer> ranks = player.hand.ranksInHand();
+            SortedSet<Integer> ranks = player.ranksInHand();
 
             for (int rank : ranks) {
                 System.out.println(rank);
@@ -113,13 +114,15 @@ public class Game {
                     ArrayList<Card> stolenCards = player.stealCard(opp, pick);
 
                     if (stolenCards.isEmpty()) {
+
                         System.out.println("Go Fish!");
                         System.out.println("You drew " + player.drawCard(deck) + "!");
-                        return false;
+                        return checkForSet(player); //Player gets to attempt a steal again through completing a set through drawing
                     }
                     else {
                         System.out.println("You stole: " + stolenCards);
-                        System.out.println("You can try to steal again!"); //Currently cant switch targets after successful steal
+                        System.out.println("You can try to steal again!");
+                        checkForSet(player);
                         return true;
                     }
                 }
