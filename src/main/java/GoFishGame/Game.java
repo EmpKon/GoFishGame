@@ -12,8 +12,17 @@ public class Game {
     Scanner inp = new Scanner(System.in);
     int pCount;
     int cardCount;
+    private final GameUI ui;
     private Deck deck;
     Boolean end = false;
+
+    public Game() {
+        this.ui = new ConsoleUI();
+    }
+
+    public Game(GameUI ui) {
+        this.ui = ui;
+    }
 
     public void setup(Deck deck) {
         this.deck = deck;
@@ -71,26 +80,8 @@ public class Game {
             System.out.println(counter + ". " + p.id());
         }
 
-        int target = intInpValidation(1, opps.size(), inp);
+        int target = ui.getInt("", 1, opps.size());
         return opps.get(target - 1);
-    }
-
-    public int intInpValidation(int min, int max, Scanner inp) {
-
-        if (min > max) {
-            throw new IllegalArgumentException("min cannot be greater than max");
-        }
-
-        while (true) {
-            if (inp.hasNextInt()) {
-                int val = inp.nextInt();
-                if (val >= min && val <= max) {
-                    return val;
-                } else {
-                    System.out.println("Please enter a number between " + min + " and " + max);
-                }
-            }
-        }
     }
 
     public boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) { //TODO Fat messy method, split this up
