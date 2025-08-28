@@ -2,6 +2,7 @@ package GoFishGame;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.SortedSet;
 
 public class Player {
     private static int serial = 1;
@@ -26,6 +27,10 @@ public class Player {
     public String showHand() {
         this.hand.sort();
         return id() + " " + this.hand.toString();
+    }
+
+    public SortedSet<Integer> ranksInHand() {
+        return hand.ranksInHand();
     }
 
     public int score() {
