@@ -56,6 +56,7 @@ public class Game {
         }
     }
 
+
     public boolean checkForSet(Player player) {
         String name = player.id();
         int set = player.checkSet();
@@ -81,44 +82,35 @@ public class Game {
         return opps.get(target - 1);
     }
 
-    public boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) { //TODO Fat messy method, split this up
+    public ArrayList<Card> attemptSteal(Player player, ArrayList<Player> opps) {
         String name = player.id();
         player.showHand();
         Player opp = selectOpponent(opps);
+        SortedSet<Integer> ranks = player.ranksInHand();
 
-        while(true) {
-            ui.showMessage(name + "'s turn\nWhat rank would you like to steal?");
-            SortedSet<Integer> ranks = player.ranksInHand();
+        ui.showMessage(player.id() + "'s turn");
 
-            ui.showMessage(ranks);
+        int pick = ui.getIntFromList("What rank would you like to steal?\n" + ranks, ranks);
+        return player.stealCard(opp, pick);
+    }
 
-            if (inp.hasNextInt()) {
-                int pick = inp.nextInt();
+    public boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) { //TODO Fat messy method, split this up
+        ArrayList<Card> stolenCards = attemptSteal(player, opps);
 
-                if (ranks.contains(pick)) {
-                    ArrayList<Card> stolenCards = player.stealCard(opp, pick);
+        if (stolenCards.isEmpty()) {
+            ui.showMessage("Go Fish!");
+            ui.showMessage("You drew " + player.drawCard(deck) + "!");
 
-                    if (stolenCards.isEmpty()) {
+            return checkForSet(player); //Player gets to attempt a steal again through completing a set through drawing
+        } else {
+            ui.showMessage("You stole: " + stolenCards);
+            ui.showMessage("You can try to steal again!");
 
-                        ui.showMessage("Go Fish!");
-                        ui.showMessage("You drew " + player.drawCard(deck) + "!");
-                        return checkForSet(player); //Player gets to attempt a steal again through completing a set through drawing
-                    } else {
-                        ui.showMessage("You stole: " + stolenCards);
-                        ui.showMessage("You can try to steal again!");
-                        checkForSet(player);
-                        return true;
-                    }
-                } else {
-                    ui.showMessage("You can't try to steal a rank that you don't have");
-                }
-
-            } else {
-                ui.showMessage("Please input a number");
-                inp.next();
-            }
+            checkForSet(player);
+            return true;
         }
     }
+
 
 
     public void turn(Player player) throws InterruptedException {
