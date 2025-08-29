@@ -27,9 +27,9 @@ public class Game {
     public void setup(Deck deck) {
         this.deck = deck;
 
-        System.out.println("Enter the number of players! (2-5)");
+        ui.showMessage("Enter the number of players! (2-5)");
         while (!inp.hasNext("[2-5]")) {
-            System.out.println("Please enter a valid number!");
+            ui.showMessage("Please enter a valid number!");
             inp.next();
         }
         pCount = inp.nextInt();
@@ -41,12 +41,12 @@ public class Game {
             cardCount = 5;
         }
 
-        System.out.println("Starting game with " + pCount + " players and a " + cardCount + " card hand!");
+        ui.showMessage("Starting game with " + pCount + " players and a " + cardCount + " card hand!");
         for (int p = 0; p < pCount; p++) {
             players.add(new Player());
         }
         this.deck.shuffle();
-        System.out.println("Dealing cards...");
+        ui.showMessage("Dealing cards...");
 
         for (Player p : players) {
             for (int dealt = 0; dealt < cardCount; dealt++) {
@@ -55,7 +55,7 @@ public class Game {
         }
         //temporary check
         for (Player p : players) {
-            System.out.println(p.showHand());
+            ui.showMessage(String.valueOf(p.showHand()));
         }
     }
     public boolean checkForSet(Player player) {
@@ -63,21 +63,21 @@ public class Game {
         int set = player.checkSet();
 
         if (set > 0) {
-            System.out.println(name + " has completed a set of 4 rank " + set + " cards!");
+            ui.showMessage(name + " has completed a set of 4 rank " + set + " cards!");
             player.clearSet();
-            System.out.println(name + " now has a total score of " + player.score() + "!");
+            ui.showMessage(name + " now has a total score of " + player.score() + "!");
             return true;
         }
         return false;
     }
 
     public Player selectOpponent(ArrayList<Player> opps) {
-        System.out.println("Who do you want to take a card from?");
+        ui.showMessage("Who do you want to take a card from?");
         int counter = 0;
 
         for (Player p : opps) {
             counter++;
-            System.out.println(counter + ". " + p.id());
+            ui.showMessage(counter + ". " + p.id());
         }
 
         int target = ui.getInt("", 1, opps.size());
@@ -90,12 +90,12 @@ public class Game {
         Player opp = selectOpponent(opps);
 
         while(true) {
-            System.out.println(name + "'s turn");
-            System.out.println("What rank would you like to steal?");
+            ui.showMessage(name + "'s turn");
+            ui.showMessage("What rank would you like to steal?");
             SortedSet<Integer> ranks = player.ranksInHand();
 
             for (int rank : ranks) {
-                System.out.println(rank);
+                ui.showMessage(String.valueOf(rank));
             }
 
             if (inp.hasNextInt()) {
@@ -106,24 +106,24 @@ public class Game {
 
                     if (stolenCards.isEmpty()) {
 
-                        System.out.println("Go Fish!");
-                        System.out.println("You drew " + player.drawCard(deck) + "!");
+                        ui.showMessage("Go Fish!");
+                        ui.showMessage("You drew " + player.drawCard(deck) + "!");
                         return checkForSet(player); //Player gets to attempt a steal again through completing a set through drawing
                     }
                     else {
-                        System.out.println("You stole: " + stolenCards);
-                        System.out.println("You can try to steal again!");
+                        ui.showMessage("You stole: " + stolenCards);
+                        ui.showMessage("You can try to steal again!");
                         checkForSet(player);
                         return true;
                     }
                 }
 
                 else {
-                    System.out.println("You can't try to steal a rank that you don't have");
+                    ui.showMessage("You can't try to steal a rank that you don't have");
                 }
 
             } else {
-                System.out.println("Please input a number");
+                ui.showMessage("Please input a number");
                 inp.next();
             }
         }
@@ -134,11 +134,11 @@ public class Game {
         String name = player.id();
         ArrayList<Player> opps = new ArrayList<Player>();
         int counter = 0;
-        System.out.println(name + "'s turn!");
+        ui.showMessage(name + "'s turn!");
 
         checkForSet(player); //Make this an option for an action during a player's turn
 
-        System.out.println("What would you like to do?");
+        ui.showMessage("What would you like to do?");
         //TODO method for options here
         //TODO cases, check hand, steal, complete set(?), view scores, view completed ranks, view cards left
 
