@@ -1,5 +1,6 @@
 package GoFishGame;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Scanner;
 import java.util.SortedSet;
@@ -45,7 +46,22 @@ public class ConsoleUI implements GameUI {
 
     @Override
     public int getIntFromList(String msg, Collection<Integer> ranks) {
-        return 0;
+        while (true) {
+            System.out.println(msg);
+            if (inp.hasNextInt()) {
+                int pick = inp.nextInt();
+
+                if (ranks.contains(pick)) {
+                    return pick;
+                } else {
+                    System.out.println("You can't try to steal a rank that you don't have...");
+                }
+
+            } else {
+                System.out.println("Please input a number.");
+                inp.next();
+            }
+        }
     }
 
     @Override
