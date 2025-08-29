@@ -24,40 +24,38 @@ public class Game {
         this.ui = ui;
     }
 
-    public void setup(Deck deck) {
-        this.deck = deck;
+    private int startingHandSize(int players) {
+        return players > 3 ? 5 : 7;
+    }
 
-        ui.showMessage("Enter the number of players! (2-5)");
-        while (!inp.hasNext("[2-5]")) {
-            ui.showMessage("Please enter a valid number!");
-            inp.next();
-        }
-        pCount = inp.nextInt();
-
-        if (pCount > 3) {
-            cardCount = 7;
-        }
-        else {
-            cardCount = 5;
-        }
-
-        ui.showMessage("Starting game with " + pCount + " players and a " + cardCount + " card hand!");
-        for (int p = 0; p < pCount; p++) {
-            players.add(new Player());
-        }
-        this.deck.shuffle();
-        ui.showMessage("Dealing cards...");
-
+    private void dealCards() {
         for (Player p : players) {
             for (int dealt = 0; dealt < cardCount; dealt++) {
                 p.drawCard(this.deck);
             }
         }
+    }
+
+    public void setup(Deck deck) {
+        this.deck = deck;
+        this.deck.shuffle();
+
+        pCount = ui.getInt("Enter the number of players! (2-5)", 2, 5);
+        cardCount = startingHandSize(pCount);
+
+        ui.showMessage("Starting game with " + pCount + " players and a " + cardCount + " card hand!");
+
+        for (int p = 0; p < pCount; p++) {
+            players.add(new Player());
+        }
+        dealCards();
+
         //temporary check
         for (Player p : players) {
-            ui.showMessage(String.valueOf(p.showHand()));
+            ui.showMessage(p.showHand());
         }
     }
+
     public boolean checkForSet(Player player) {
         String name = player.id();
         int set = player.checkSet();
@@ -79,7 +77,6 @@ public class Game {
             counter++;
             ui.showMessage(counter + ". " + p.id());
         }
-
         int target = ui.getInt("", 1, opps.size());
         return opps.get(target - 1);
     }
@@ -90,13 +87,10 @@ public class Game {
         Player opp = selectOpponent(opps);
 
         while(true) {
-            ui.showMessage(name + "'s turn");
-            ui.showMessage("What rank would you like to steal?");
+            ui.showMessage(name + "'s turn\nWhat rank would you like to steal?");
             SortedSet<Integer> ranks = player.ranksInHand();
 
-            for (int rank : ranks) {
-                ui.showMessage(String.valueOf(rank));
-            }
+            ui.showMessage(ranks);
 
             if (inp.hasNextInt()) {
                 int pick = inp.nextInt();
@@ -109,16 +103,13 @@ public class Game {
                         ui.showMessage("Go Fish!");
                         ui.showMessage("You drew " + player.drawCard(deck) + "!");
                         return checkForSet(player); //Player gets to attempt a steal again through completing a set through drawing
-                    }
-                    else {
+                    } else {
                         ui.showMessage("You stole: " + stolenCards);
                         ui.showMessage("You can try to steal again!");
                         checkForSet(player);
                         return true;
                     }
-                }
-
-                else {
+                } else {
                     ui.showMessage("You can't try to steal a rank that you don't have");
                 }
 
