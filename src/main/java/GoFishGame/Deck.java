@@ -21,6 +21,10 @@ public class Deck {
         Collections.shuffle(deck);
     }
 
+    public boolean isEmpty() {
+        return deck.isEmpty();
+    }
+
     public Card drawCard() {
         return deck.remove(0);
     }

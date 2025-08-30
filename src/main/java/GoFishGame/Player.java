@@ -24,10 +24,15 @@ public class Player {
         return "Player_" + this.id;
     }
 
+    public boolean handIsEmpty() {
+        return this.hand.isEmpty();
+    }
+
     public String showHand() {
         this.hand.sort();
         return id() + " " + this.hand.toString();
     }
+
 
     public SortedSet<Integer> ranksInHand() {
         return hand.ranksInHand();
