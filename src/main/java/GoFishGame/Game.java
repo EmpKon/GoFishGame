@@ -1,7 +1,6 @@
 package GoFishGame;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.SortedSet;
 
@@ -9,6 +8,7 @@ import static java.lang.Thread.sleep;
 
 public class Game {
     ArrayList<Player> players = new ArrayList<Player>();
+    ArrayList<Player> activePlayers = new ArrayList<Player>();
     Scanner inp = new Scanner(System.in);
     int pCount;
     int cardCount;
@@ -26,6 +26,16 @@ public class Game {
 
     private int startingHandSize(int players) {
         return players > 3 ? 5 : 7;
+    }
+
+    void addPlayer(Player p) {
+        players.add(p);
+        activePlayers.add(p);
+    }
+
+    void dropPlayer(Player p) {
+        ui.showMessage(p.id() + " has dropped out of the game! \nThey ran out of cards and the deck is completely empty!");
+        activePlayers.remove(p);
     }
 
     private void dealCards() {
@@ -46,7 +56,7 @@ public class Game {
         ui.showMessage("Starting game with " + pCount + " players and a " + cardCount + " card hand!");
 
         for (int p = 0; p < pCount; p++) {
-            players.add(new Player());
+            addPlayer(new Player());
         }
         dealCards();
 
@@ -98,9 +108,13 @@ public class Game {
         ArrayList<Card> stolenCards = attemptSteal(player, opps);
 
         if (stolenCards.isEmpty()) {
-            ui.showMessage("Go Fish!");
-            ui.showMessage("You drew " + player.drawCard(deck) + "!");
-
+            if (!deck.isEmpty()) {
+                ui.showMessage("Go Fish!");
+                ui.showMessage("You drew " + player.drawCard(deck) + "!");
+            }
+            else {
+                ui.showMessage("The deck is empty!");
+            }
             return checkForSet(player); //Player gets to attempt a steal again through completing a set through drawing
         } else {
             ui.showMessage("You stole: " + stolenCards);
@@ -113,7 +127,7 @@ public class Game {
 
 
 
-    public void turn(Player player) throws InterruptedException {
+    public void turn(Player player) {
         String name = player.id();
         ArrayList<Player> opps = new ArrayList<Player>();
         int counter = 0;
@@ -125,10 +139,14 @@ public class Game {
         //TODO method for options here
         //TODO cases, check hand, steal, complete set(?), view scores, view completed ranks, view cards left
 
-        for (Player p : players) {
+        for (Player p : activePlayers) {
             if (p != player) {
                 opps.add(p);
             }
+        }
+
+        if (player.handIsEmpty() && deck.isEmpty()) {
+            dropPlayer(player);
         }
 
         boolean stole = false;
@@ -137,10 +155,10 @@ public class Game {
         } while (stole);
     }
 
-    public void play() throws InterruptedException {
+    public void play() {
         int curr = 0;
         while (!end) {
-            turn(this.players.get(curr));
+            turn(this.activePlayers.get(curr));
             curr = (curr + 1) % pCount;
         }
 
