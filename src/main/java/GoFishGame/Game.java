@@ -1,5 +1,6 @@
 package GoFishGame;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.SortedSet;
@@ -35,6 +36,7 @@ public class Game {
 
     void dropPlayer(Player p) {
         ui.showMessage(p.id() + " has dropped out of the game! \nThey ran out of cards and the deck is completely empty!");
+        pCount = pCount-1;
         activePlayers.remove(p);
     }
 
@@ -74,7 +76,7 @@ public class Game {
         if (set > 0) {
             ui.showMessage(name + " has completed a set of 4 rank " + set + " cards!");
             player.clearSet();
-            ui.showMessage(name + " now has a total score of " + player.score() + "!");
+            ui.showMessage(name + " now has a total score of " + player.getScore() + "!");
             return true;
         }
         return false;
@@ -93,6 +95,7 @@ public class Game {
     }
 
     public ArrayList<Card> attemptSteal(Player player, ArrayList<Player> opps) {
+        int pick;
         String name = player.id();
         player.showHand();
         Player opp = selectOpponent(opps);
@@ -100,7 +103,16 @@ public class Game {
 
         ui.showMessage(player.id() + "'s turn");
 
-        int pick = ui.getIntFromList("What rank would you like to steal?\n" + ranks, ranks);
+        if (player.handIsEmpty()) {
+            ui.showMessage("Hand is empty! \nDrawing from the deck!");
+            Card drawnCard = player.drawCard(deck);
+            ui.showMessage(player.id() + " Drew " + drawnCard);
+            pick = drawnCard.getRank();
+        }
+        else {
+            pick = ui.getIntFromList("What rank would you like to steal?\n" + ranks, ranks);
+        }
+
         return player.stealCard(opp, pick);
     }
 
@@ -136,6 +148,17 @@ public class Game {
         checkForSet(player); //Make this an option for an action during a player's turn
 
         ui.showMessage("What would you like to do?");
+        int choice = ui.getInt("1 = clear the deck and resume play, 2 = clear current players hand, 3 = increase current players score, 4 = normal play", 1, 4);
+        if (choice == 1) {
+            deck.empty();
+        }
+        else if (choice == 2) {
+            player.clearHand();
+        }
+        else if (choice == 3) {
+            player.addScore();
+        }
+
         //TODO method for options here
         //TODO cases, check hand, steal, complete set(?), view scores, view completed ranks, view cards left
 
@@ -147,6 +170,7 @@ public class Game {
 
         if (player.handIsEmpty() && deck.isEmpty()) {
             dropPlayer(player);
+            return;
         }
 
         boolean stole = false;
@@ -155,12 +179,33 @@ public class Game {
         } while (stole);
     }
 
+    public ArrayList<Player> getWinner(ArrayList<Player> players) {
+        int maxScore = 0;
+        ArrayList<Player> winners = new ArrayList<>();
+        for (Player player : players) {
+            int pScore = player.getScore();
+            if (pScore >= maxScore) {
+                if (pScore == maxScore) {
+                    winners.add(player);
+                }
+                else {
+                    winners.clear();
+                    winners.add(player);
+                }
+                maxScore = pScore;
+            }
+        }
+        return winners;
+    }
+
     public void play() {
         int curr = 0;
-        while (!end) {
+        while (pCount > 1) {
             turn(this.activePlayers.get(curr));
             curr = (curr + 1) % pCount;
         }
+        ArrayList<Player> winners = getWinner(players);
+        ui.announceWinner(winners);
 
     }
 
