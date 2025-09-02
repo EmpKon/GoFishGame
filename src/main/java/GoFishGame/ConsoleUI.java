@@ -40,6 +40,7 @@ public class ConsoleUI implements GameUI {
                 }
             } else {
                 System.out.println("Please enter a number");
+                inp.next();
             }
         }
     }
