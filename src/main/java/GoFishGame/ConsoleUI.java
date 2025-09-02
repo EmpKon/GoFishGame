@@ -1,9 +1,10 @@
 package GoFishGame;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
-import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 public class ConsoleUI implements GameUI {
     private final Scanner inp = new Scanner(System.in);
@@ -66,8 +67,16 @@ public class ConsoleUI implements GameUI {
     }
 
     @Override
-    public void announceWinner() {
-
+    public void announceWinner(ArrayList<Player> winners) {
+        if (winners.size() == 1) {
+            Player winner = winners.get(0);
+            System.out.println("The winner is " + winner.id() + "!\nThey had a total of " + winner.getScore() + " points!");
+        }
+        else {
+            System.out.println("It's a " + winners.size() + " way tie!\nThe winners are " + winners.stream()
+                    .map(Player::id)
+                    .collect(Collectors.toList()));
+        }
     }
 
 }
