@@ -1,7 +1,6 @@
 package GoFishGame;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.SortedSet;
 
 public class Player {
@@ -24,6 +23,14 @@ public class Player {
         return "Player_" + this.id;
     }
 
+    public void clearHand() {
+        hand.empty();
+    }
+
+    public void addScore() { //Method used for testing purposes
+        this.score += 1;
+    }
+
     public boolean handIsEmpty() {
         return this.hand.isEmpty();
     }
@@ -38,7 +45,7 @@ public class Player {
         return hand.ranksInHand();
     }
 
-    public int score() {
+    public int getScore() {
         return this.score;
     }
 

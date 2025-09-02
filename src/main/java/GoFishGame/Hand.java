@@ -15,6 +15,10 @@ public class Hand {
         return hand.isEmpty();
     }
 
+    public void empty() {
+        hand.clear();
+    }
+
     public SortedSet<Integer> ranksInHand() {
         SortedSet<Integer> hRanks = new TreeSet<Integer>();
         for (Card card : this.hand) {

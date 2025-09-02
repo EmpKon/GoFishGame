@@ -25,6 +25,10 @@ public class Deck {
         return deck.isEmpty();
     }
 
+    public void empty() {
+        deck.clear();
+    }
+
     public Card drawCard() {
         return deck.remove(0);
     }
