@@ -68,6 +68,16 @@ public class Game {
         }
     }
 
+    public String viewScores(ArrayList<Player> players) {
+        StringBuilder output = new StringBuilder();
+        for (Player player : players) {
+            output.append(player.id())
+                    .append("'s score: ")
+                    .append(player.getScore())
+                    .append("\n");
+        }
+        return output.toString();
+    }
 
     public boolean checkForSet(Player player) {
         String name = player.id();
@@ -116,7 +126,7 @@ public class Game {
         return player.stealCard(opp, pick);
     }
 
-    public boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) { //TODO Fat messy method, split this up
+    public boolean turnSteal(Player player, ArrayList<Player> opps, Scanner inp, Deck deck) {
         ArrayList<Card> stolenCards = attemptSteal(player, opps);
 
         if (stolenCards.isEmpty()) {
@@ -146,21 +156,9 @@ public class Game {
         ui.showMessage(name + "'s turn!");
 
         checkForSet(player); //Make this an option for an action during a player's turn
-
-        ui.showMessage("What would you like to do?");
-        int choice = ui.getInt("1 = clear the deck and resume play, 2 = clear current players hand, 3 = increase current players score, 4 = normal play", 1, 4);
-        if (choice == 1) {
-            deck.empty();
+        if (player.handIsEmpty() && deck.isEmpty()) {
+            dropPlayer(player);
         }
-        else if (choice == 2) {
-            player.clearHand();
-        }
-        else if (choice == 3) {
-            player.addScore();
-        }
-
-        //TODO method for options here
-        //TODO cases, check hand, steal, complete set(?), view scores, view completed ranks, view cards left
 
         for (Player p : activePlayers) {
             if (p != player) {
@@ -168,15 +166,33 @@ public class Game {
             }
         }
 
-        if (player.handIsEmpty() && deck.isEmpty()) {
-            dropPlayer(player);
-            return;
+        while (true) {
+            ui.showMessage("What would you like to do?"); //TODO Add slight delays to make things readable, clean up random prints
+            ui.showMessage("1 = Steal from another players \n2 = Check your hand \n3 = View scores \n4 = View completed ranks");
+            int choice = ui.getInt("11 = clear the deck and resume play \n12 = clear current players hand \n13 = increase current players score \n14 = normal play", 1, 14);
+            if (choice == 1) {
+                boolean stole = false;
+                do {
+                    stole = turnSteal(player, opps, inp, deck);
+                } while (stole);
+            }
+            else if (choice == 2) {
+                ui.showMessage(player.showHand());
+            }
+            else if (choice == 3) {
+                ui.showMessage(viewScores(players));
+            }
+            else if (choice == 11) {
+                deck.empty();
+            } else if (choice == 12) {
+                player.clearHand();
+            } else if (choice == 13) {
+                player.addScore();
+            }
+            else {
+                break;
+            }
         }
-
-        boolean stole = false;
-        do {
-            stole = turnSteal(player, opps, inp, deck);
-        } while (stole);
     }
 
     public ArrayList<Player> getWinner(ArrayList<Player> players) {
