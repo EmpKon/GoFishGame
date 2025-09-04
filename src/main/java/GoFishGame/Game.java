@@ -238,9 +238,4 @@ public class Game {
         ui.announceWinner(winners);
 
     }
-
-    public static void main(String[] args) {
-        ;
-    }
-
 }
