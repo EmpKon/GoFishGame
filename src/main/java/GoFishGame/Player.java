@@ -37,7 +37,7 @@ public class Player {
 
     public String showHand() {
         this.hand.sort();
-        return id() + " " + this.hand.toString();
+        return id() + " " + this.hand.toString() + "\n";
     }
 
 
