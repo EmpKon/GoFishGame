@@ -183,6 +183,7 @@ public class Game {
                 do {
                     stole = turnSteal(player, opps, inp, deck);
                 } while (stole);
+                break;
             }
             else if (choice == 2) {
                 ui.showMessage(player.showHand());
